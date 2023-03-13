@@ -50,6 +50,84 @@ namespace Controllers
                 return BadRequest(error.Message);
             }
         }
+        [HttpGet]
+        [Route("LowestSalary")]
+        public async Task<ActionResult> ReturnEmplyeesWithLowestSalary()
+        {
+            try
+            {
+                List<Employee> employees = await _dbContext.Employees
+                                                .Include(employee => employee.employeeType)
+                                                .ToListAsync();
+                if (employees.Count == 0)
+                {
+                    return BadRequest("No employees");
+                }
+                float lowest = employees[0].monthlySalary;
+                Employee lowestSalaryEmploye = employees[0];
+                foreach(Employee employee in employees)
+                {
+                    if(employee.monthlySalary<lowest)
+                    {
+                        lowest = employee.monthlySalary;
+                        lowestSalaryEmploye = employee;
+                    }
+                }
+                return Ok(new
+                {
+                    id = lowestSalaryEmploye.id,
+                    fullName = lowestSalaryEmploye.fullName,
+                    email = lowestSalaryEmploye.email,
+                    phoneNumber = lowestSalaryEmploye.phoneNumber,
+                    dateOfBirth = lowestSalaryEmploye.dateOfBirth,
+                    monthlySalary = lowestSalaryEmploye.monthlySalary,
+                    position = lowestSalaryEmploye.employeeType.naziv
+                });
+            }
+            catch (Exception error)
+            {
+                return BadRequest(error.Message);
+            }
+        }
+        [HttpGet]
+        [Route("HighestSalary")]
+        public async Task<ActionResult> ReturnEmplyeesWithHighestSalary()
+        {
+            try
+            {
+                List<Employee> employees = await _dbContext.Employees
+                                                .Include(employee => employee.employeeType)
+                                                .ToListAsync();
+                if (employees.Count == 0)
+                {
+                    return BadRequest("No employees");
+                }
+                float highest = employees[0].monthlySalary;
+                Employee highestSalaryEmploye = employees[0];
+                foreach(Employee employee in employees)
+                {
+                    if(employee.monthlySalary>highest)
+                    {
+                        highest = employee.monthlySalary;
+                        highestSalaryEmploye = employee;
+                    }
+                }
+                return Ok(new
+                {
+                    id = highestSalaryEmploye.id,
+                    fullName = highestSalaryEmploye.fullName,
+                    email = highestSalaryEmploye.email,
+                    phoneNumber = highestSalaryEmploye.phoneNumber,
+                    dateOfBirth = highestSalaryEmploye.dateOfBirth,
+                    monthlySalary = highestSalaryEmploye.monthlySalary,
+                    position = highestSalaryEmploye.employeeType.naziv
+                });
+            }
+            catch (Exception error)
+            {
+                return BadRequest(error.Message);
+            }
+        }
 
         [HttpGet]
         [Route("{id}")]
